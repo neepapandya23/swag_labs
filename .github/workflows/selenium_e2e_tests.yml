@@ -27,6 +27,8 @@ jobs:
 
       - name: Run Selenium Tests
         run: python run_tests.py --maxfail=1 --disable-warnings
+        env:
+          DISPLAY: ":99.0"  # Needed for running headless browsers in CI
 
       - name: Upload failure screenshots (if any)
         if: failure()
