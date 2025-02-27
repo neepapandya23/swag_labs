@@ -1,3 +1,6 @@
+"""
+test_saucedemo_2_page.py file runs automatically using run_tests.py file.
+"""
 import pytest
 import os
 

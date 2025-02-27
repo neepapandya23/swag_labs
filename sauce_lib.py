@@ -1,7 +1,9 @@
+"""
+This file(utility file) is used for all activities/functionalities related to webpages handling using selenium web driver.
+"""
 #sauce_lib.py
 import os
 import time
-import pytest
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -18,7 +20,7 @@ class TestSauce:
     def driver_init(browser="chrome"):
         """Initialize the web driver with the given browser (chrome/edge)."""
         if browser == "edge":
-            driver = webdriver.Edge(service=Service(EdgeDriverManager().install()))
+            driver = webdriver.Edge()
         elif browser == "chrome":
             options = Options()
             options.add_argument("start-maximized")

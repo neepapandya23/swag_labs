@@ -15,7 +15,6 @@ STEP 6: Test for Logout process.
 """
 
 import pytest
-import logging
 from sauce_lib import TestSauce
 from selenium.webdriver.common.by import By
 
