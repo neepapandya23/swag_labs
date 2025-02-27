@@ -1,0 +1,36 @@
+name: Selenium E2E Tests
+
+on:
+  schedule:
+    - cron: "0 12 * * 1-5"  # Runs at noon (12:00 UTC) from Monday to Friday
+  workflow_dispatch:  # Allows manual execution
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y chromium-chromedriver
+          echo "ChromeDriver installed"
+
+      - name: Run Selenium Tests
+        run: python run_tests.py --maxfail=1 --disable-warnings
+
+      - name: Upload failure screenshots (if any)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-failure-screenshots
+          path: ./screenshots
