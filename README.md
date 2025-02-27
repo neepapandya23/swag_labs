@@ -12,10 +12,15 @@ There are two main below test conducted using pytest and with shared test data( 
 1. Test Login page functionality.
 2. Test End-to-End Process functionality which is all page test activities shown step by step as below.
 STEP 1: Test for login functionality.
+
 STEP 2: Test for inventory page after successful login.
+
 STEP 3: Test for add an item to the cart page.
+
 STEP 4: Test for cart page after adding item to cart.
+
 STEP 5: Test for checkout process.
+
 STEP 6: Test for Logout process.
 
 During tests generated screenshots stored in cretaed new folder screenshots.
