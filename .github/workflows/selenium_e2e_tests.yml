@@ -20,16 +20,26 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          sudo apt-get update
-          sudo apt-get install -y chromium-chromedriver
-          echo "ChromeDriver installed"
-          pip install selenium webdriver-manager
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install your dependencies from the requirements file
 
-      - name: Install Chrome
+      # Install Google Chrome and ChromeDriver
+      - name: Install Google Chrome
         run: |
-          sudo apt update
-          sudo apt install -y google-chrome-stable
+          sudo apt-get update -y
+          sudo apt-get install -y wget curl unzip
+          curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome.deb
+          sudo dpkg -i google-chrome.deb
+          sudo apt --fix-broken install -y
+
+      # Install ChromeDriver
+      - name: Install ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | sed 's/\./\-/g')
+          DRIVER_VERSION=$(curl -sSL https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
+          wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
 
       - name: Run Selenium Tests
         run: python run_tests.py --maxfail=1 --disable-warnings
