@@ -39,9 +39,13 @@ You will successfully execute this above code.
 GitHub workflows to run the front-end tests Monday to Friday at noon has also set up.
 
 Currently three major bugs in the website and that's why three testcases are failing.
+
 1.Problem User: Continue button from proceed to checkout for problem_user failed due to Error: Last Name is required!, hence we can not do any further process.
+
 2.Error User: Error in checkout process: Checkout complete container did not appear after clicking Finish!
+
 3.Visual User: Error in Cart Page: Price mismatch.
 
 I have tested and executed all users against end to end process through manually and automated testing as above and generated test result bug stored in "swag_labs_bug_all_users.xlsx"
+
 For more detail test runs and result, you can find in my Test Rail account, where I have mentioned all comments and attached screenshots as well.
