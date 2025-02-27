@@ -18,7 +18,7 @@ import pytest
 from sauce_lib import TestSauce
 from selenium.webdriver.common.by import By
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def test_sauce():
     sauce = TestSauce()
     # sauce.main_URL = "https://www.saucedemo.com"
@@ -31,7 +31,7 @@ def test_sauce():
         sauce.driver.quit()
 
 # Parametrize the test data here
-@pytest.fixture(scope="session", params=TestSauce.read_test_data_from_excel("test_data.xlsx"), ids=lambda val:val['username'])
+@pytest.fixture(scope="function", params=TestSauce.read_test_data_from_excel("test_data.xlsx"), ids=lambda val:val['username'])
 def test_data(request):
     try:
         return request.param
