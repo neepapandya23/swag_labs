@@ -1,4 +1,19 @@
 #test_saucedemo_2_page.py
+"""Description: this script will enter into website:https://www.saucedemo.com/ and do front-end E2E tests using Selenium
+framework.
+There are two main below test conducted using pytest and with shared test data( stored in "test_data.xlsx") from the
+fixture where all users information added.
+
+1. Test Login page functionality.
+2. Test End-to-End Process functionality which is all page test activities shown step by step as below.
+STEP 1: Test for login functionality.
+STEP 2: Test for inventory page after successful login.
+STEP 3: Test for add an item to the cart page.
+STEP 4: Test for cart page after adding item to cart.
+STEP 5: Test for checkout process.
+STEP 6: Test for Logout process.
+"""
+
 import pytest
 import logging
 from sauce_lib import TestSauce
@@ -25,15 +40,6 @@ def test_data(request):
         print("test_data.xlsx not found!")
         pytest.fail("Test data file not found!")
 
-# Parametrize the test data here
-@pytest.fixture(scope="function", params=TestSauce.read_filling_form_test_data_from_excel("filling_form_data.xlsx"))
-def filling_form_data(request):
-    try:
-        return request.param
-    except FileNotFoundError:
-        print("filling_form_data.xlsx not found!")
-        pytest.fail("filling_form_data file not found!")
-
 # Test Login Page using the shared test data from the fixture
 def test_login_functionality(test_sauce, test_data):
     try:
@@ -51,7 +57,7 @@ def test_login_functionality(test_sauce, test_data):
         raise exc
 
 # Test End-to-End Process using the shared test data from the fixture
-def test_end_to_end_checkout_process(test_sauce, test_data, filling_form_data):
+def test_end_to_end_checkout_process(test_sauce, test_data):
     try:
         print("\nTest end-to-end process with given test data")
         print("\nSTEP 1: Test login functionality.")
@@ -63,12 +69,12 @@ def test_end_to_end_checkout_process(test_sauce, test_data, filling_form_data):
             # Perform the rest of the steps
             print("STEP 2: Test for inventory page after successful login")
             test_sauce.verify_inventory_page_details()
-            print("STEP 3: Test for add to cart page.")
+            print("STEP 3: Test for add an item to the cart page.")
             test_sauce.verify_add_item_to_cart()
             print("STEP 4: Test for cart page after adding item to cart.")
             test_sauce.verify_cart_page()
             print("STEP 5: Test for checkout process.")
-            test_sauce.verify_proceed_to_checkout_continue_button(test_data, filling_form_data)
+            test_sauce.verify_proceed_to_checkout_continue_button(test_data)
             print("STEP 6: Test for Logout process.")
             test_sauce.verify_logout()
         else:
