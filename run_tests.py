@@ -4,7 +4,7 @@ test_saucedemo_2_page.py file runs automatically using run_tests.py file.
 import pytest
 import os
 
-def run_tests(test_dir=None, test_file="test_saucedemo_2_page.py"):
+def run_tests(test_dir=None, test_file="test_saucedemo_2_page.py", base_url=None):
     # Default test directory
     if test_dir is None:
         test_dir = os.getcwd()  # Get the current working directory by default
@@ -17,10 +17,21 @@ def run_tests(test_dir=None, test_file="test_saucedemo_2_page.py"):
         print(f"Error: Test file '{test_path}' does not exist.")
         return
 
-    # Run pytest with verbose and print options, and save allure results
-    pytest.main(["-v", "-s", test_path])
+    # Prepare pytest arguments
+    pytest_args = ["-v", "-s", test_path]
+
+    if base_url:
+        pytest_args.append(f"--base-url={base_url}")
+
+    # Run pytest
+    pytest.main(pytest_args)
 
 if __name__ == "__main__":
-    # By default, this will run tests in the "tests" folder with the test file "test_saucedemo_2_page.py"
-    run_tests()  # Uses default values
+    # Get base URL from environment variable (optional)
+    base_url = os.getenv("BASE_URL")
+
+    # Run tests with optional base URL
+    run_tests()
+
+
 

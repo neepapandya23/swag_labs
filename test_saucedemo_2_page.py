@@ -21,7 +21,7 @@ from selenium.webdriver.common.by import By
 @pytest.fixture(scope="session")
 def test_sauce():
     sauce = TestSauce()
-    sauce.main_URL = "https://www.saucedemo.com"
+    # sauce.main_URL = "https://www.saucedemo.com"
     sauce.driver = sauce.driver_init(browser="chrome")  # Initialize WebDriver (or choose 'edge' if needed)
     sauce.item_wants_to_add = "Sauce Labs Backpack"
     sauce.inventory_items_details = []
@@ -40,9 +40,9 @@ def test_data(request):
         pytest.fail("Test data file not found!")
 
 # Test Login Page using the shared test data from the fixture
-def test_login_functionality(test_sauce, test_data):
+def test_login_functionality(test_sauce, test_data, base_url):
     try:
-        test_sauce.verify_login_page(test_data)
+        test_sauce.verify_login_page(test_data, base_url)
         if test_data['expected_result'] == "success":
             assert "inventory" in test_sauce.driver.current_url, "Login failed!"
             print(f"\nLogin test for {test_data['username']} passed!")
@@ -56,26 +56,26 @@ def test_login_functionality(test_sauce, test_data):
         raise exc
 
 # Test End-to-End Process using the shared test data from the fixture
-def test_end_to_end_checkout_process(test_sauce, test_data):
+def test_end_to_end_checkout_process(test_sauce, test_data, base_url):
     try:
         print("\nTest end-to-end process with given test data")
         print("\nSTEP 1: Test login functionality.")
-        test_sauce.verify_login_page(test_data)
+        test_sauce.verify_login_page(test_data, base_url)
         if test_data['expected_result'] == "success":
             assert "inventory" in test_sauce.driver.current_url, "Login failed!"
             print(f"\nLogin test for {test_data['username']} has passed and redirected to Inventory page.")
             print("------------------------------------------------------")
             # Perform the rest of the steps
             print("STEP 2: Test for inventory page after successful login")
-            test_sauce.verify_inventory_page_details()
+            test_sauce.verify_inventory_page_details(base_url)
             print("STEP 3: Test for add an item to the cart page.")
-            test_sauce.verify_add_item_to_cart()
+            test_sauce.verify_add_item_to_cart(base_url)
             print("STEP 4: Test for cart page after adding item to cart.")
-            test_sauce.verify_cart_page()
+            test_sauce.verify_cart_page(base_url)
             print("STEP 5: Test for checkout process.")
-            test_sauce.verify_proceed_to_checkout_continue_button(test_data)
+            test_sauce.verify_proceed_to_checkout_continue_button(test_data,base_url)
             print("STEP 6: Test for Logout process.")
-            test_sauce.verify_logout()
+            test_sauce.verify_logout(base_url)
         else:
             error_message = test_sauce.driver.find_element(By.CSS_SELECTOR, ".error-message-container")
             assert error_message.is_displayed(), "Error message not displayed"

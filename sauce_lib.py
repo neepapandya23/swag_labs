@@ -14,6 +14,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
+from conftest import base_url
+
+
 class TestSauce:
 
     @staticmethod
@@ -44,10 +47,10 @@ class TestSauce:
         wait = WebDriverWait(self.driver, timeout)
         return wait.until(EC.visibility_of_element_located((by, locator)))
 
-    def verify_login_page(self, test_data):
+    def verify_login_page(self, test_data, base_url):
         # Open the website
         try:
-            self.driver.get(self.main_URL)
+            self.driver.get(base_url)
             # Find the username, password fields, and login button
             username = self.driver.find_element(By.ID, "user-name")
             password = self.driver.find_element(By.ID, "password")
@@ -63,10 +66,10 @@ class TestSauce:
         except Exception as exc:
             raise exc
 
-    def verify_inventory_page_details(self):
+    def verify_inventory_page_details(self,base_url):
         # Make sure user is logged in and on the inventory page
         try:
-            self.driver.get(self.main_URL + "/inventory.html")
+            self.driver.get(base_url + "/inventory.html")
 
             # Wait for the inventory list to be visible
             wait = WebDriverWait(self.driver, 10)
@@ -110,13 +113,13 @@ class TestSauce:
         except Exception as exc:
             # Perform logout
             print("Logging out due to failure...")
-            self.verify_logout()
+            self.verify_logout(base_url)
             raise exc
 
-    def verify_add_item_to_cart(self):
+    def verify_add_item_to_cart(self,base_url):
         try:
             # Make sure user is on the inventory page
-            self.driver.get(self.main_URL + "/inventory.html")
+            self.driver.get(base_url + "/inventory.html")
             # Loop through the inventory items to find the backpack
             inventory_items = self.driver.find_elements(By.CLASS_NAME, "inventory_item")
             for item in inventory_items:
@@ -139,13 +142,13 @@ class TestSauce:
         except Exception as exc:
             # Perform logout
             print("Logging out due to failure...")
-            self.verify_logout()
+            self.verify_logout(base_url)
             raise exc
 
-    def verify_cart_page(self):
+    def verify_cart_page(self, base_url):
         try:
             # Go to the cart page
-            self.driver.get(self.main_URL + "/cart.html")
+            self.driver.get(base_url+ "/cart.html")
             # Wait for the cart item to be visible
             cart_item = self.wait_for_element(By.CLASS_NAME, "cart_item")
             assert cart_item.is_displayed(), "No items in the cart"
@@ -182,13 +185,13 @@ class TestSauce:
             print(f"Error in Cart Page: {exc}")
             # Perform logout
             print("Logging out due to failure...")
-            self.verify_logout()
+            self.verify_logout(base_url)
             raise exc
 
     # Test for reset app state functionality
-    def perform_reset_app_state(self):
+    def perform_reset_app_state(self, base_url):
         try:
-            self.driver.get(self.main_URL + "/inventory.html")
+            self.driver.get(base_url + "/inventory.html")
             menu_button = self.wait_for_element(By.ID, "react-burger-menu-btn")
             print("Click the menu button to open the user menu.")
             menu_button.click()
@@ -208,10 +211,10 @@ class TestSauce:
             raise exc
 
     # Test for logout functionality
-    def verify_logout(self):
+    def verify_logout(self, base_url):
         try:
-            self.perform_reset_app_state()
-            self.driver.get(self.main_URL + "/inventory.html")
+            self.perform_reset_app_state(base_url)
+            self.driver.get(base_url + "/inventory.html")
             menu_button = self.wait_for_element(By.ID, "react-burger-menu-btn")
             # Click the menu button to open the user menu
             menu_button.click()
@@ -229,10 +232,10 @@ class TestSauce:
         except Exception as exc:
             raise exc
 
-    def verify_proceed_to_checkout_continue_button(self, test_data):
+    def verify_proceed_to_checkout_continue_button(self, test_data, base_url):
         """Verify valid credentials added to the form and proceed to checkout."""
         try:
-            self.driver.get(self.main_URL + "/checkout-step-one.html")
+            self.driver.get(base_url + "/checkout-step-one.html")
 
             first_name = test_data.get('First_Name', "")
             last_name = test_data.get('Last_Name', "")
@@ -266,12 +269,10 @@ class TestSauce:
                         print("------------------------------------------------------")
                         self.verify_checkout_overview()
                         self.verify_checkout_complete()
-
         except Exception as exc:
             print("Logging out due to failure...")
-            self.verify_logout()
+            self.verify_logout(base_url)
             raise exc
-
 
     def verify_checkout_overview(self):
         """checkout overview process display added item info"""
