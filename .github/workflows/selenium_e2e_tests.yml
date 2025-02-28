@@ -32,15 +32,23 @@ jobs:
           sudo dpkg -i google-chrome.deb
           sudo apt --fix-broken install -y
 
-      # Install ChromeDriver
-      - name: Install ChromeDriver
+      - name: Set up ChromeDriver
         run: |
-          CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | sed 's/\./\-/g')
-          DRIVER_VERSION=$(curl -sSL https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
-          wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          wget -N "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
+          chmod +x /usr/local/bin/chromedriver
 
+      - name: Retry on Failure
+        run: |
+          for i in {1..5}; do
+            wget -q --retry-connrefused --waitretry=5 --tries=5 \
+              "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" && break
+           sleep 10
+          done
+    
       - name: Run Selenium Tests
         run: python run_tests.py --maxfail=1 --disable-warnings
         env:
