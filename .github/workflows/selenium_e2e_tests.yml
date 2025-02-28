@@ -34,6 +34,9 @@ jobs:
         env:
           DISPLAY: ":99.0"  # Needed for running headless browsers in CI
 
+      - name: Ensure Screenshots Folder Exists
+        run: mkdir -p screenshots  # ✅ Create folder if missing
+
       - name: Upload failure screenshots (if any)
         if: failure()
         uses: actions/upload-artifact@v4
